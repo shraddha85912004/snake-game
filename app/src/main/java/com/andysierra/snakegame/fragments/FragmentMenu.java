@@ -1,11 +1,11 @@
-package com.andysierra.culebrita.fragments;
+package com.andysierra.snakegame.fragments;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.andysierra.culebrita.R;
+import com.andysierra.snakegame.R;
 
 /**
  * A simple {@link Fragment} subclass.
