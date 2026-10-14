@@ -2,6 +2,7 @@ package com.andysierra.snakegame.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
@@ -43,7 +44,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void exitGame() {
-        finishAndRemoveTask();
+        if (game != null) {
+            game.isActive = false;
+            game.isPaused = true;
+        }
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        exitGame();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (game != null) {
+            game.isActive = false;
+            game.isPaused = true;
+        }
     }
 
     public void showPauseDialog() {
