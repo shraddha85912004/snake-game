@@ -59,6 +59,18 @@ public class Game extends Observable
         return this.highScoreManager;
     }
 
+    public long getCurrentSnakeSpeed() {
+        if (snakes != null && snakes.length > 0 && snakes[0] != null && snakes[0].body != null) {
+            int currentSize = snakes[0].body.size() + 1; // head + body segments
+            if (currentSize > Consts.SIZE_THRESHOLD) {
+                int excess = currentSize - Consts.SIZE_THRESHOLD;
+                long speed = (long) (Consts.SNAKE_TIME * Math.pow(Consts.SPEED_DECREASE_FACTOR, excess));
+                return Math.max(Consts.MIN_SNAKE_TIME, speed);
+            }
+        }
+        return Consts.SNAKE_TIME;
+    }
+
 
 
 
@@ -136,7 +148,7 @@ public class Game extends Observable
 
                         // Ejecute a una velocidad time  (Movimiento snake)
                         // SI ESTÁ EN PAUSA, LA SNAKE SE ANIMA PERO NO SE MUEVE DE SU POSICIÓN
-                        if(System.currentTimeMillis()- snakeMovement > Consts.SNAKE_TIME) {
+                        if(System.currentTimeMillis()- snakeMovement > getCurrentSnakeSpeed()) {
                             execute(Consts.EXECUTE_UP);                        // Tic/Tac de animación
                             execute(Consts.EXECUTE_UPDATE_BOARD);        // refrescar pantalla
                             execute(Consts.EXECUTE_UPDATE_SCORE);        // Actualizar score

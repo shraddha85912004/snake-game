@@ -9,7 +9,10 @@ public class Consts
     public static final int BOMB_DIFFICULTY   = 3;  // default 3
 
     // Medidas de time y FPS
-    public static final int SNAKE_TIME            = 350;          // Velocidad de snake, defaults 150, 250, 350
+    public static final int SNAKE_TIME            = 350;          // Velocidad base de snake
+    public static final int SIZE_THRESHOLD        = 6;            // Umbral de tamaño fijo para incremento de velocidad
+    public static final double SPEED_DECREASE_FACTOR = 0.95;      // Reducción del 5% en ms (aumento de velocidad)
+    public static final int MIN_SNAKE_TIME        = 80;           // Velocidad máxima permitida (ms mínimos)
     public static final int SECOND                     = 1000;         // segundero
     public static final int APPLE_TIME              = 1000;         // aparición de apples
 
