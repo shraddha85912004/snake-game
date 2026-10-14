@@ -10,8 +10,9 @@ public class Consts
 
     // Medidas de time y FPS
     public static final int SNAKE_TIME            = 350;          // Velocidad base de snake
-    public static final int SIZE_THRESHOLD        = 6;            // Umbral de tamaño fijo para incremento de velocidad
-    public static final double SPEED_DECREASE_FACTOR = 0.95;      // Reducción del 5% en ms (aumento de velocidad)
+    public static final int INITIAL_SIZE_THRESHOLD = 8;           // Primer umbral de tamaño para aceleración (tamaño 8)
+    public static final int SIZE_THRESHOLD_STEP   = 4;            // Siguientes umbrales cada 4 segmentos (12, 16, 20, 24...)
+    public static final double SPEED_DECREASE_FACTOR = 0.95;      // Reducción del 5% en ms por cada umbral alcanzado
     public static final int MIN_SNAKE_TIME        = 80;           // Velocidad máxima permitida (ms mínimos)
     public static final int SECOND                     = 1000;         // segundero
     public static final int APPLE_TIME              = 1000;         // aparición de apples
