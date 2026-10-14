@@ -1,12 +1,12 @@
-package com.andysierra.snakegame.views;
+package com.snakegame.views;
 
 import android.graphics.drawable.Animatable;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.andysierra.snakegame.R;
-import com.andysierra.snakegame.activities.MainActivity;
-import com.andysierra.snakegame.constants.Consts;
+import com.snakegame.R;
+import com.snakegame.activities.MainActivity;
+import com.snakegame.constants.Consts;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Timer;

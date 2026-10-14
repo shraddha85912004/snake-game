@@ -1,4 +1,4 @@
-package com.andysierra.culebrita;
+package com.snakegame;
 
 import org.junit.Test;
 

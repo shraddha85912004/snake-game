@@ -1,15 +1,15 @@
-package com.andysierra.snakegame.models;
+package com.snakegame.models;
 
 import android.util.Log;
-import com.andysierra.snakegame.activities.MainActivity;
-import com.andysierra.snakegame.constants.Consts;
+import com.snakegame.activities.MainActivity;
+import com.snakegame.constants.Consts;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
-import com.andysierra.snakegame.data.HighScoreManager;
+import com.snakegame.data.HighScoreManager;
 
 public class Game extends Observable
 {
@@ -62,9 +62,9 @@ public class Game extends Observable
     public long getCurrentSnakeSpeed() {
         if (snakes != null && snakes.length > 0 && snakes[0] != null && snakes[0].body != null) {
             int currentSize = snakes[0].body.size() + 1; // head + body segments
-            if (currentSize >= Consts.INITIAL_SIZE_THRESHOLD) {
-                int tiers = 1 + (currentSize - Consts.INITIAL_SIZE_THRESHOLD) / Consts.SIZE_THRESHOLD_STEP;
-                long speed = (long) (Consts.SNAKE_TIME * Math.pow(Consts.SPEED_DECREASE_FACTOR, tiers));
+            if (currentSize > Consts.SIZE_THRESHOLD) {
+                int excess = currentSize - Consts.SIZE_THRESHOLD;
+                long speed = (long) (Consts.SNAKE_TIME * Math.pow(Consts.SPEED_DECREASE_FACTOR, excess));
                 return Math.max(Consts.MIN_SNAKE_TIME, speed);
             }
         }

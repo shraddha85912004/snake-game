@@ -1,4 +1,4 @@
-package com.andysierra.snakegame.data;
+package com.snakegame.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;

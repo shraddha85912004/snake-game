@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "com.andysierra.snakegame"
+    namespace "com.snakegame"
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.andysierra.snakegame"
+        applicationId "com.snakegame"
         minSdk 26
         targetSdk 34
         versionCode 1

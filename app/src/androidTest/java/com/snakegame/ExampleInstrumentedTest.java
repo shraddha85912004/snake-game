@@ -1,4 +1,4 @@
-package com.andysierra.culebrita;
+package com.snakegame;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest
     public void useAppContext() {
         // Context of the app under test.
         Context appContext=InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.andysierra.culebrita", appContext.getPackageName());
+        assertEquals("com.snakegame", appContext.getPackageName());
     }
 }

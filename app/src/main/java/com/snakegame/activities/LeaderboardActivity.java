@@ -1,11 +1,11 @@
-package com.andysierra.snakegame.activities;
+package com.snakegame.activities;
 
 import android.os.Bundle;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.andysierra.snakegame.R;
-import com.andysierra.snakegame.data.HighScoreManager;
+import com.snakegame.R;
+import com.snakegame.data.HighScoreManager;
 
 import java.util.ArrayList;
 import java.util.Collections;

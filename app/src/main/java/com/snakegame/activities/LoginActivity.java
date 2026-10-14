@@ -1,4 +1,4 @@
-package com.andysierra.snakegame.activities;
+package com.snakegame.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,8 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.andysierra.snakegame.R;
-import com.andysierra.snakegame.data.HighScoreManager;
+import com.snakegame.R;
+import com.snakegame.data.HighScoreManager;
 
 public class LoginActivity extends AppCompatActivity {
     @Override

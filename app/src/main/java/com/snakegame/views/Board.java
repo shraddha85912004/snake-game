@@ -1,4 +1,4 @@
-package com.andysierra.snakegame.views;
+package com.snakegame.views;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -12,9 +12,9 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.andysierra.snakegame.R;
-import com.andysierra.snakegame.activities.MainActivity;
-import com.andysierra.snakegame.constants.Consts;
+import com.snakegame.R;
+import com.snakegame.activities.MainActivity;
+import com.snakegame.constants.Consts;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -231,7 +231,7 @@ public class Board <T extends ViewGroup> implements Observer
                     @Override
                     public void run() {
                         seconds.i--;
-                        message.setText("bombs en "+seconds.i+"...");
+                        message.setText("BOMBS IN:  "+seconds.i+"...");
                         if(seconds.i==0) {
                             countdown.cancel();
                             message.setText("");
@@ -240,7 +240,7 @@ public class Board <T extends ViewGroup> implements Observer
                 }, 1000,1000);
             } else if (msgArg instanceof String && msgArg.equals("GAME OVER")) {
                 message.setText("");
-                ((com.andysierra.snakegame.activities.MainActivity)container.getContext()).showGameOverDialog();
+                ((com.snakegame.activities.MainActivity)container.getContext()).showGameOverDialog();
             }
         }
 

@@ -1,8 +1,8 @@
-package com.andysierra.snakegame.models;
+package com.snakegame.models;
 
 import android.util.Log;
 
-import com.andysierra.snakegame.constants.Consts;
+import com.snakegame.constants.Consts;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Observable;

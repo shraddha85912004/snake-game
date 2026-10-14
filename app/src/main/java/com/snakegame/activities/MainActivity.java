@@ -1,4 +1,4 @@
-package com.andysierra.snakegame.activities;
+package com.snakegame.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
-import com.andysierra.snakegame.R;
-import com.andysierra.snakegame.constants.Consts;
-import com.andysierra.snakegame.control.Control;
-import com.andysierra.snakegame.models.*;
-import com.andysierra.snakegame.views.*;
+import com.snakegame.R;
+import com.snakegame.constants.Consts;
+import com.snakegame.control.Control;
+import com.snakegame.models.*;
+import com.snakegame.views.*;
 import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity

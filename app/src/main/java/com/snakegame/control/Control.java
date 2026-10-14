@@ -1,15 +1,15 @@
-package com.andysierra.snakegame.control;
+package com.snakegame.control;
 
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import com.andysierra.snakegame.activities.MainActivity;
-import com.andysierra.snakegame.constants.Consts;
-import com.andysierra.snakegame.models.Game;
-import com.andysierra.snakegame.models.Snake;
-import com.andysierra.snakegame.views.Info;
-import com.andysierra.snakegame.views.Board;
+import com.snakegame.activities.MainActivity;
+import com.snakegame.constants.Consts;
+import com.snakegame.models.Game;
+import com.snakegame.models.Snake;
+import com.snakegame.views.Info;
+import com.snakegame.views.Board;
 
 public class Control implements ViewTreeObserver.OnGlobalLayoutListener,    // Controlar el layout
                                 View.OnTouchListener,                       // Controlar el touch
@@ -49,11 +49,11 @@ public class Control implements ViewTreeObserver.OnGlobalLayoutListener,    // C
         for(Snake s : snakes) s.addObserver(info);
         board.container.getViewTreeObserver().addOnGlobalLayoutListener(this);
         
-        mainActivity.findViewById(com.andysierra.snakegame.R.id.btnUp).setOnClickListener(this);
-        mainActivity.findViewById(com.andysierra.snakegame.R.id.btnDown).setOnClickListener(this);
-        mainActivity.findViewById(com.andysierra.snakegame.R.id.btnLeft).setOnClickListener(this);
-        mainActivity.findViewById(com.andysierra.snakegame.R.id.btnRight).setOnClickListener(this);
-        mainActivity.findViewById(com.andysierra.snakegame.R.id.btnPause).setOnClickListener(this);
+        mainActivity.findViewById(com.snakegame.R.id.btnUp).setOnClickListener(this);
+        mainActivity.findViewById(com.snakegame.R.id.btnDown).setOnClickListener(this);
+        mainActivity.findViewById(com.snakegame.R.id.btnLeft).setOnClickListener(this);
+        mainActivity.findViewById(com.snakegame.R.id.btnRight).setOnClickListener(this);
+        mainActivity.findViewById(com.snakegame.R.id.btnPause).setOnClickListener(this);
     }
 
 
@@ -126,15 +126,15 @@ public class Control implements ViewTreeObserver.OnGlobalLayoutListener,    // C
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == com.andysierra.snakegame.R.id.btnUp) {
+        if (id == com.snakegame.R.id.btnUp) {
             game.direction = Consts.direction.UP;
-        } else if (id == com.andysierra.snakegame.R.id.btnDown) {
+        } else if (id == com.snakegame.R.id.btnDown) {
             game.direction = Consts.direction.DOWN;
-        } else if (id == com.andysierra.snakegame.R.id.btnLeft) {
+        } else if (id == com.snakegame.R.id.btnLeft) {
             game.direction = Consts.direction.LEFT;
-        } else if (id == com.andysierra.snakegame.R.id.btnRight) {
+        } else if (id == com.snakegame.R.id.btnRight) {
             game.direction = Consts.direction.RIGHT;
-        } else if (id == com.andysierra.snakegame.R.id.btnPause) {
+        } else if (id == com.snakegame.R.id.btnPause) {
             game.isPaused = true;
             ((MainActivity)board.container.getContext()).showPauseDialog();
         }
