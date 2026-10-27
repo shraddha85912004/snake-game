@@ -47,8 +47,8 @@ public class Consts
     public static final Consts.direction INITIAL_ORIENTATION    = direction.LEFT;
 
     // Hints
-    public static final String GOOD_BOMB      = "bomb: No te quitará puntos por ahora :)";
-    public static final String BAD_BOMB       = "bomb: -10 puntos";
+    public static final String GOOD_BOMB      = "bomb: No points deducted :)";
+    public static final String BAD_BOMB       = "bomb: -1 points";
     public static final String GAME_OVER        = "Game Over ¯\\_(ツ)_/¯";
 
     // Mensajes
@@ -67,8 +67,8 @@ public class Consts
     public static final int BOMB                       = 43;
     public static final int POISON                      = 44;
     public static final int SAFE_AREA                 = 45;
-    public static final int RACCOON                     = 50;   // Primer   jefe
-    public static final int FOX                       = 51;   // Segundo  Jefe
-    public static final int COYOTE                      = 52;   // Tercer   Jefe
-    public static final int MONGOOSE                    = 53;   // Último   Jefe
+    public static final int RACCOON                     = 50;
+    public static final int FOX                       = 51;
+    public static final int COYOTE                      = 52;
+    public static final int MONGOOSE                    = 53;
 }
