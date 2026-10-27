@@ -26,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (name.isEmpty()) {
                     name = "Player 1";
                 }
-                
+
                 // Save name to HighScoreManager before starting game
                 HighScoreManager hsm = new HighScoreManager(LoginActivity.this);
                 hsm.setCurrentUser(name);
@@ -42,6 +42,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, LeaderboardActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button btnRules = findViewById(R.id.btnRules);
+        btnRules.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, RulesActivity.class);
                 startActivity(intent);
             }
         });
