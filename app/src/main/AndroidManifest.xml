@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.snakegame">
 
     <application
         android:allowBackup="true"
@@ -9,35 +10,43 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:largeHeap="true">
+
+        <!-- Splash Activity is the MAIN Launcher -->
         <activity
-            android:name=".activities.SplashActivity"
+            android:name="com.snakegame.activities.SplashActivity"
             android:exported="true"
+            android:theme="@style/SplashTheme"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".activities.LoginActivity"
+            android:name="com.snakegame.activities.LoginActivity"
             android:exported="false"
             android:screenOrientation="portrait">
         </activity>
+
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.snakegame.activities.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait">
         </activity>
+
         <activity
-            android:name=".activities.LeaderboardActivity"
+            android:name="com.snakegame.activities.LeaderboardActivity"
             android:exported="false"
             android:screenOrientation="portrait">
         </activity>
+
         <activity
-            android:name=".activities.RulesActivity"
+            android:name="com.snakegame.activities.RulesActivity"
             android:exported="false"
             android:screenOrientation="portrait">
         </activity>
+
     </application>
 
 </manifest>
