@@ -11,47 +11,52 @@ import java.util.Timer;
 import java.util.TimerTask;
 import com.snakegame.data.HighScoreManager;
 
+/**
+ * Game Model (Observable)
+ * Central game engine managing the main game loop, timer, score,
+ * speed scaling, item spawns (apples & bombs), and state broadcasts to Views.
+ */
 public class Game extends Observable
 {
-    private static final String TAG="Game";
+    private static final String TAG = "Game";
     private ArrayList<Observer> observers;
     WeakReference<MainActivity> weakActivity;
     private HighScoreManager highScoreManager;
     public static int[][] grid;
     private int randomSecond;
-    public static int   score,
-                        seconds,
-                        minutes,
-                        hours,
-                        applesInGame,
-                        bombsInGame,
-                        appleCounter,
-                        poisonEffect;
+    public static int score,
+                      seconds,
+                      minutes,
+                      hours,
+                      applesInGame,
+                      bombsInGame,
+                      appleCounter,
+                      poisonEffect;
     public boolean isPaused, isActive;
     private Thread loop;
     public Snake[] snakes;
     public Consts.direction direction;
-    long snakeMovement;    // Velocidad de snake
-    long time;                 // Segundero
+    long snakeMovement; // Timestamp tracking snake movement intervals
+    long time;          // Timestamp tracking 1-second elapsed clock intervals
 
-
-    // CONSTRUCTOR: Inicializar los objetos
+    /**
+     * Constructor: Initializes game settings, HighScoreManager, and registers Observers.
+     */
     public Game(WeakReference<MainActivity> weakActivity, Snake... snakes) {
-        this.weakActivity = weakActivity;   // Referencia débil de MainActivity
+        this.weakActivity = weakActivity; // Weak reference to avoid Activity memory leaks
         if (weakActivity.get() != null) {
             this.highScoreManager = new HighScoreManager(weakActivity.get());
         }
         try {
             this.snakes = snakes;
-            if(snakes.length<1)
-                throw new InstantiationException("Al instanciar un objeto game, debes pasar como " +
-                        "parámetro al menos una snake");
+            if (snakes.length < 1)
+                throw new InstantiationException("When instantiating a game object, you must pass at least one snake as a parameter");
         }
         catch (InstantiationException i) {
             Log.e(TAG, i.getMessage(), i);
             ((MainActivity)weakActivity.get()).exitGame();
         }
-        observers = new ArrayList<>();   // Mis observers
+        observers = new ArrayList<>();
         this.isPaused = true;
     }
 
@@ -59,9 +64,14 @@ public class Game extends Observable
         return this.highScoreManager;
     }
 
+    /**
+     * Dynamically calculates snake speed:
+     * As the snake grows beyond the threshold, delay decreases by 5% per segment,
+     * making the game progressively faster down to MIN_SNAKE_TIME.
+     */
     public long getCurrentSnakeSpeed() {
         if (snakes != null && snakes.length > 0 && snakes[0] != null && snakes[0].body != null) {
-            int currentSize = snakes[0].body.size() + 1; // head + body segments
+            int currentSize = snakes[0].body.size() + 1; // Head + body segments
             if (currentSize > Consts.SIZE_THRESHOLD) {
                 int excess = currentSize - Consts.SIZE_THRESHOLD;
                 long speed = (long) (Consts.SNAKE_TIME * Math.pow(Consts.SPEED_DECREASE_FACTOR, excess));
@@ -71,21 +81,21 @@ public class Game extends Observable
         return Consts.SNAKE_TIME;
     }
 
-
-
-
-    // CONSTRUCTOR: Inicializar los objetos
+    /**
+     * Prepares and resets the entire game board, score, timer, and snake.
+     */
     public void prepareGame() {
         Game.grid = new int[Consts.ROWS][Consts.COLS];
 
-        // iniciar backgrund ajedrezao
-
-        for(int i=0; i<Consts.ROWS; i++)
-            for(int j=0; j<Consts.COLS; j++)
-                Game.grid[i][j] = ((i%2==0 && j%2==0) || (i%2!=0 && j%2!=0))?
+        // Initialize checkered background pattern
+        for (int i = 0; i < Consts.ROWS; i++) {
+            for (int j = 0; j < Consts.COLS; j++) {
+                Game.grid[i][j] = ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) ?
                         Consts.EMPTY1 : Consts.EMPTY2;
+            }
+        }
 
-        // reiniciar valores del game
+        // Reset game stats and counters
         Game.score = 0;
         Game.seconds = 0;
         Game.minutes = 0;
@@ -94,122 +104,108 @@ public class Game extends Observable
         Game.bombsInGame = 0;
         Game.appleCounter = 0;
         Game.poisonEffect = 1;
-        randomSecond = ((int)(Math.random()*50+10));
+        randomSecond = ((int)(Math.random() * 50 + 10));
 
-        // reiniciar dirección
+        // Reset initial heading direction
         this.direction = Consts.direction.LEFT;
 
-        // reiniciar snake
+        // Reset snake model
         snakes[0].resetSnake();
 
-        // Colocar snake
+        // Place initial snake head and segments on the grid
         Game.grid[snakes[0].headI][snakes[0].headJ] = Consts.SNAKE_HEAD;
         snakes[0].addSegments();
 
-        // execute game
-        if( ((MainActivity)weakActivity.get()) != null &&
-            !((MainActivity)weakActivity.get()).isFinishing() ) { this.looper(); }
+        // Start the game loop thread if activity is alive
+        if (((MainActivity)weakActivity.get()) != null &&
+            !((MainActivity)weakActivity.get()).isFinishing()) {
+            this.looper();
+        }
     }
 
-
-
-
-
-    // Obtener una cell vacía para poner apples
+    /**
+     * Finds a random unoccupied cell on the board to spawn items.
+     */
     private int[] getEmptyCell() {
-        int i = (int)(Math.random()*Consts.ROWS);
-        int j = (int)(Math.random()*Consts.COLS);
+        int i = (int)(Math.random() * Consts.ROWS);
+        int j = (int)(Math.random() * Consts.COLS);
 
-        while(Game.grid[i][j] != Consts.EMPTY1 && Game.grid[i][j] != Consts.EMPTY2) {
-            i = (int)(Math.random()*Consts.ROWS);
-            j = (int)(Math.random()*Consts.COLS);
+        while (Game.grid[i][j] != Consts.EMPTY1 && Game.grid[i][j] != Consts.EMPTY2) {
+            i = (int)(Math.random() * Consts.ROWS);
+            j = (int)(Math.random() * Consts.COLS);
         }
         return new int[]{i, j};
     }
 
-
-
-
-
-    // Loop principal del game
+    /**
+     * Main game loop thread:
+     * Advances snake movement based on dynamic speed and handles periodic 1-second events
+     * (clock updates, warning countdowns, and item spawns).
+     */
     private void looper() {
         isActive = true;
-        isPaused  = true;
-        if(loop == null) {
-            loop = new Thread(new Runnable()    // Hilo del loop
-            {
+        isPaused = true;
+        if (loop == null) {
+            loop = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    snakeMovement = System.currentTimeMillis();    // Iniciar fps
-                    time              = System.currentTimeMillis();    // Iniciar el time
+                    snakeMovement = System.currentTimeMillis();
+                    time          = System.currentTimeMillis();
 
-                    while (isActive) {                      // Mientras el game esté activo
-
-
-                        // Ejecute a una velocidad time  (Movimiento snake)
-                        // SI ESTÁ EN PAUSA, LA SNAKE SE ANIMA PERO NO SE MUEVE DE SU POSICIÓN
-                        if(System.currentTimeMillis()- snakeMovement > getCurrentSnakeSpeed()) {
-                            execute(Consts.EXECUTE_UP);                        // Tic/Tac de animación
-                            execute(Consts.EXECUTE_UPDATE_BOARD);        // refrescar pantalla
-                            execute(Consts.EXECUTE_UPDATE_SCORE);        // Actualizar score
-                            snakeMovement= System.currentTimeMillis();
+                    while (isActive) {
+                        // Advance snake at current calculated speed interval
+                        if (System.currentTimeMillis() - snakeMovement > getCurrentSnakeSpeed()) {
+                            execute(Consts.EXECUTE_UP);           // Alternates item animation phase
+                            execute(Consts.EXECUTE_UPDATE_BOARD); // Advances movement and redraws board
+                            execute(Consts.EXECUTE_UPDATE_SCORE); // Updates live score display
+                            snakeMovement = System.currentTimeMillis();
                         }
 
-
-                        if(!isPaused) {                      // Si el game no está en Pausa
-
-                            // Obtenga el time transcurrido (requerimiento)
-                            if(System.currentTimeMillis()- time > Consts.SECOND) {
-                                if(!isPaused)
-                                    execute(Consts.EXECUTE_TIMER);          // Actualizar Tiempo
-                                execute(Consts.EXECUTE_UPDATE_TIME_TXT);      // Actualizar reloj
-                                execute(Consts.EXECUTE_UPDATE_MESSAGE);        // Actualizo mensajes
-                                if(Game.applesInGame<1)
-                                    execute(Consts.EXECUTE_SPAWN_APPLE);         // Spawnear apples
-                                if(randomSecond == seconds)
-                                    execute(Consts.EXECUTE_SPAWN_BOMB);           // Spawnear bombs
-                                time= System.currentTimeMillis();
+                        // Periodic 1-second tick (only when unpaused)
+                        if (!isPaused) {
+                            if (System.currentTimeMillis() - time > Consts.SECOND) {
+                                if (!isPaused)
+                                    execute(Consts.EXECUTE_TIMER);          // Increments elapsed seconds/minutes
+                                execute(Consts.EXECUTE_UPDATE_TIME_TXT);    // Formats and displays clock text
+                                execute(Consts.EXECUTE_UPDATE_MESSAGE);     // Checks for bomb warning broadcast
+                                if (Game.applesInGame < 1)
+                                    execute(Consts.EXECUTE_SPAWN_APPLE);    // Spawns new apple when board is clear
+                                if (randomSecond == seconds)
+                                    execute(Consts.EXECUTE_SPAWN_BOMB);     // Spawns periodic bomb obstacles
+                                time = System.currentTimeMillis();
                             }
                         }
                     }
                 }
-            },"loop_del_juego");
-            loop.start();   // Iniciar el loop
+            }, "game_loop_thread");
+            loop.start();
         }
     }
 
-
-
-
+    /**
+     * Executes specified game operation and dispatches updates to Views on the main UI thread.
+     */
     private synchronized void execute(int operation) {
 
-        // EJECUTAR TIC TAC DE ANIMACIÓN
-        if(operation == Consts.EXECUTE_UP) {
-            ((MainActivity)weakActivity.get()).runOnUiThread(new Runnable()
-            {
+        // Operation 1: Item bounce animation tick
+        if (operation == Consts.EXECUTE_UP) {
+            ((MainActivity)weakActivity.get()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    notifyObservers(new Object[]{
-                            Consts.EXECUTE_UP
-                    });
+                    notifyObservers(new Object[]{ Consts.EXECUTE_UP });
                 }
             });
         }
 
-        // EJECUTAR MOVIMIENTO DE SNAKE
-        if(operation == Consts.EXECUTE_UPDATE_BOARD) {
-            ((MainActivity)weakActivity.get()).runOnUiThread(new Runnable()
-            {
+        // Operation 2: Snake movement and collision check
+        if (operation == Consts.EXECUTE_UPDATE_BOARD) {
+            ((MainActivity)weakActivity.get()).runOnUiThread(new Runnable() {
                 @Override
-                public void run() {             // Notificar en el Thread principal
-
-                    // Si la cabeza no se mueve, muestre que se estrelló y pause el game,
-                    // o sino siga actualizando el board.
-
-                    if(!isPaused)
-                        if(!snakes[0].move(direction)) {
-                            Game.grid[snakes[0].headI][snakes[0].headJ] =
-                                    Consts.SNAKE_HEAD_CRASH;
+                public void run() {
+                    // Attempt step; if collision occurs, trigger Game Over
+                    if (!isPaused) {
+                        if (!snakes[0].move(direction)) {
+                            Game.grid[snakes[0].headI][snakes[0].headJ] = Consts.SNAKE_HEAD_CRASH;
                             isPaused = true;
                             notifyObservers(new Object[]{
                                 Consts.EXECUTE_UPDATE_HINT,
@@ -221,16 +217,19 @@ public class Game extends Observable
                                 true
                             });
                             notifyObservers(new Object[]{
-                                    Consts.EXECUTE_UPDATE_TIME_TXT,
-                                    "00:00"
+                                Consts.EXECUTE_UPDATE_TIME_TXT,
+                                "00:00"
                             });
                             seconds = 0;
                         }
+                    }
 
-                    if(snakes[0].nextLevel) {
+                    // Level progression check
+                    if (snakes[0].nextLevel) {
                         prepareGame();
                     }
 
+                    // Notify Board view to repaint current frame
                     notifyObservers(new Object[]{
                             Consts.EXECUTE_UPDATE_BOARD,
                             grid,
@@ -243,12 +242,12 @@ public class Game extends Observable
             });
         }
 
-        else if(operation == Consts.EXECUTE_UPDATE_SCORE) {
+        // Operation 3: Update score and persist high score
+        else if (operation == Consts.EXECUTE_UPDATE_SCORE) {
             if (highScoreManager != null) {
                 highScoreManager.saveHighScore(Game.score);
             }
-            ((MainActivity)weakActivity.get()).runOnUiThread(new Runnable()
-            {
+            ((MainActivity)weakActivity.get()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     notifyObservers(new Object[]{
@@ -261,48 +260,45 @@ public class Game extends Observable
             });
         }
 
-        // TEMPORIZADOR
-        else if(operation == Consts.EXECUTE_TIMER) {
+        // Operation 4: Increment clock timer
+        else if (operation == Consts.EXECUTE_TIMER) {
             seconds++;
-            if(seconds>59) {
+            if (seconds > 59) {
                 minutes++;
-                seconds=0;
-                randomSecond = ((int)(Math.random()*60));
+                seconds = 0;
+                randomSecond = ((int)(Math.random() * 60));
             }
-            if(minutes>59) {
+            if (minutes > 59) {
                 hours++;
-                minutes=0;
+                minutes = 0;
             }
-            if(hours>24) hours=0;
+            if (hours > 24) hours = 0;
         }
 
-        else if(operation == Consts.EXECUTE_UPDATE_TIME_TXT) {
-            ((MainActivity)weakActivity.get()).runOnUiThread(new Runnable()
-            {
+        // Operation 5: Format and update elapsed time text (HH:MM:SS)
+        else if (operation == Consts.EXECUTE_UPDATE_TIME_TXT) {
+            ((MainActivity)weakActivity.get()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     notifyObservers(new Object[]{
                             Consts.EXECUTE_UPDATE_TIME_TXT,
-                            (hours>0)?
-                                    ""+hours+":"+((minutes<10)?"0"+minutes:minutes)+":"+((seconds<10)?"0"+seconds:seconds):
-                                    ((minutes<10)?"0"+minutes:minutes)+":"+((seconds<10)?"0"+seconds:seconds)
+                            (hours > 0) ?
+                                    "" + hours + ":" + ((minutes < 10) ? "0" + minutes : minutes) + ":" + ((seconds < 10) ? "0" + seconds : seconds) :
+                                    ((minutes < 10) ? "0" + minutes : minutes) + ":" + ((seconds < 10) ? "0" + seconds : seconds)
                     });
                 }
             });
         }
 
-        // SPAWN DE appleS
-        else if(operation == Consts.EXECUTE_SPAWN_APPLE) {
+        // Operation 6: Spawn apples (red standard apple, green bonus apple, or golden apple)
+        else if (operation == Consts.EXECUTE_SPAWN_APPLE) {
+            if (Game.score < Consts.NEXT_LEVEL) {
+                if (poisonEffect > 1) poisonEffect--;
 
-            if(Game.score < Consts.NEXT_LEVEL) {
-                // Si la snake está envenenada, no puede comer apples
-                if(poisonEffect>1) poisonEffect--;
-
-                // Aparecer apple roja o apple verde
-                if(seconds%poisonEffect==0) {
+                if (seconds % poisonEffect == 0) {
                     int[] coords = this.getEmptyCell();
                     Game.grid[coords[0]][coords[1]] =
-                            (appleCounter>0 && appleCounter%7==0) ?
+                            (appleCounter > 0 && appleCounter % 7 == 0) ?
                                     Consts.GREEN_APPLE : Consts.APPLE;
                     Game.applesInGame++;
                 }
@@ -314,37 +310,37 @@ public class Game extends Observable
             }
         }
 
-        // SPAWN DE bombS
-        else if(operation == Consts.EXECUTE_SPAWN_BOMB) {
-            if(bombsInGame==0) {
-                for(int i=0; i<(Consts.ROWS*Consts.COLS)/(10- Consts.BOMB_DIFFICULTY); i++) {
+        // Operation 7: Spawn random bomb obstacles across the board
+        else if (operation == Consts.EXECUTE_SPAWN_BOMB) {
+            if (bombsInGame == 0) {
+                for (int i = 0; i < (Consts.ROWS * Consts.COLS) / (10 - Consts.BOMB_DIFFICULTY); i++) {
                     int[] coords = this.getEmptyCell();
                     Game.grid[coords[0]][coords[1]] = Consts.BOMB;
                     bombsInGame++;
                 }
             }
 
-            new Timer().schedule(new TimerTask()
-            {
+            // Remove bombs automatically after 5 seconds
+            new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     bombsInGame = 0;
-                    for(int i=0; i<Consts.ROWS; i++)
-                        for(int j=0; j<Consts.COLS; j++)
-                            if(grid[i][j] == Consts.BOMB)
-                                grid[i][j] = ((i%2==0 && j%2==0) || (i%2!=0 && j%2!=0))?
+                    for (int i = 0; i < Consts.ROWS; i++) {
+                        for (int j = 0; j < Consts.COLS; j++) {
+                            if (grid[i][j] == Consts.BOMB) {
+                                grid[i][j] = ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) ?
                                         Consts.EMPTY1 : Consts.EMPTY2;
+                            }
+                        }
+                    }
                 }
             }, 5000);
         }
 
-        // ACTUALIZAR MENSAJE
-        else if(operation == Consts.EXECUTE_UPDATE_MESSAGE) {
-
-            // Si estoy a punto de soltar bombs, muestre el message
-            if((randomSecond-seconds)==4) {
-                ((MainActivity)weakActivity.get()).runOnUiThread(new Runnable()
-                {
+        // Operation 8: Broadcast warning countdown message 4 seconds before bombs appear
+        else if (operation == Consts.EXECUTE_UPDATE_MESSAGE) {
+            if ((randomSecond - seconds) == 4) {
+                ((MainActivity)weakActivity.get()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         notifyObservers(new Object[]{
@@ -357,10 +353,9 @@ public class Game extends Observable
         }
     }
 
-
     @Override
     public synchronized void addObserver(Observer o) { observers.add(o); }
 
     @Override
-    public void notifyObservers(Object arg) { for(Observer o : observers) o.update(this, arg); }
+    public void notifyObservers(Object arg) { for (Observer o : observers) o.update(this, arg); }
 }
