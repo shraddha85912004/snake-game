@@ -57,7 +57,7 @@ public class Consts
 
     // In-Game Hint Messages
     public static final String GOOD_BOMB            = "Bomb: No points deducted :)";
-    public static final String BAD_BOMB             = "Bomb: -10 points";
+    public static final String BAD_BOMB             = "Bomb: -1 point";
     public static final String GAME_OVER            = "Game Over ¯\\_(ツ)_/¯";
 
     // Broadcast Message Subtypes

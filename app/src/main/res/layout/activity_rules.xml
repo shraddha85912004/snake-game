@@ -80,7 +80,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="4.  Watch out for bombs — a 4-second countdown warns you before they appear!"
+                android:text="4.  Watch out for bombs — hitting a bomb decreases your score by 1 point!"
                 android:textColor="#E8F5E9"
                 android:textSize="15sp"
                 android:layout_marginBottom="10dp" />

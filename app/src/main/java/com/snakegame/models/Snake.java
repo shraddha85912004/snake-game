@@ -239,27 +239,17 @@ public class Snake extends Observable
         }
 
         else if (Game.grid[this.headI][this.headJ] == Consts.BOMB) {
-            if (body.size() < (Consts.ROWS * Consts.COLS) / 2) {
-                // Deduct 10 points as penalty if player has enough score
-                if (Game.score > 10) {
-                    Game.score -= 10;
-                    notifyObservers(new Object[]{
-                            Consts.EXECUTE_UPDATE_HINT,
-                            Consts.BAD_BOMB
-                    });
-                }
-                else {
-                    notifyObservers(new Object[]{
-                            Consts.EXECUTE_UPDATE_HINT,
-                            Consts.GOOD_BOMB
-                    });
-                }
-            }
-            else {
-                // If snake is large enough, spare penalty
+            // Deduct 1 point as penalty if player has score
+            if (Game.score > 0) {
+                Game.score -= 1;
                 notifyObservers(new Object[]{
-                    Consts.EXECUTE_UPDATE_HINT,
-                    Consts.GOOD_BOMB
+                        Consts.EXECUTE_UPDATE_HINT,
+                        Consts.BAD_BOMB
+                });
+            } else {
+                notifyObservers(new Object[]{
+                        Consts.EXECUTE_UPDATE_HINT,
+                        Consts.GOOD_BOMB
                 });
             }
             return -2;
