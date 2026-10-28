@@ -6,63 +6,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#D1D4C9"
+    android:background="#ECEFF1"
     tools:context=".activities.MainActivity">
 
-    <!-- Header row: POINTS left, TIME right -->
+    <!-- Header row: Modern floating HUD cards for POINTS and TIME -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="10dp"
+        android:gravity="center_vertical">
 
+        <!-- Points Card -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/hud_card_bg"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="POINTS"
+                android:text="🍎  POINTS"
+                android:textSize="11sp"
                 android:textStyle="bold"
-                android:textColor="#333333" />
+                android:textColor="#2E7D32"
+                android:letterSpacing="0.05" />
 
             <TextView
                 android:id="@+id/txfManzanas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0000"
-                android:textColor="#333333"
-                android:textSize="14sp" />
+                android:textColor="#263238"
+                android:textSize="15sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
+        <!-- Time Card -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="end">
+            android:layout_marginStart="8dp"
+            android:background="@drawable/hud_card_bg"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TIME"
+                android:text="⏱  TIME"
+                android:textSize="11sp"
                 android:textStyle="bold"
-                android:textColor="#333333" />
+                android:textColor="#E65100"
+                android:letterSpacing="0.05" />
 
             <TextView
                 android:id="@+id/txftiempo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00"
-                android:textColor="#333333"
-                android:textSize="14sp" />
+                android:textColor="#263238"
+                android:textSize="15sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Hidden views (required by code) -->
+    <!-- Hidden views required by code -->
     <TextView
         android:id="@+id/txfHint"
         android:layout_width="0dp"
@@ -75,7 +98,7 @@
         android:layout_height="0dp"
         android:visibility="gone" />
 
-    <!-- Game board: takes 55% of remaining height -->
+    <!-- Game board: 55% height -->
     <FrameLayout
         android:id="@+id/framelayout"
         android:layout_width="match_parent"
@@ -83,11 +106,12 @@
         android:layout_weight="55"
         android:background="#839763" />
 
-    <!-- Controls area: takes 45% of remaining height -->
+    <!-- Controls area: 45% height -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="45">
+        android:layout_weight="45"
+        android:background="#ECEFF1">
 
         <!-- D-Pad centered in the controls area -->
         <RelativeLayout
@@ -98,64 +122,66 @@
 
             <Button
                 android:id="@+id/btnUp"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:text="^"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:text="▲"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:backgroundTint="#FF9800"
+                android:background="@drawable/dpad_btn_bg"
                 android:textColor="#FFFFFF"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentTop="true" />
 
             <Button
                 android:id="@+id/btnLeft"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:text="&lt;"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:text="◀"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:backgroundTint="#FF9800"
+                android:background="@drawable/dpad_btn_bg"
                 android:textColor="#FFFFFF"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true" />
 
             <Button
                 android:id="@+id/btnRight"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:text="&gt;"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:text="▶"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:backgroundTint="#FF9800"
+                android:background="@drawable/dpad_btn_bg"
                 android:textColor="#FFFFFF"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true" />
 
             <Button
                 android:id="@+id/btnDown"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:text="v"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:text="▼"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:backgroundTint="#FF9800"
+                android:background="@drawable/dpad_btn_bg"
                 android:textColor="#FFFFFF"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true" />
 
         </RelativeLayout>
 
-        <!-- Pause button in top-right corner of control area -->
+        <!-- Circular floating Pause button in top-right corner -->
         <ImageButton
             android:id="@+id/btnPause"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:layout_margin="12dp"
-            android:background="@android:drawable/ic_media_pause"
-            android:backgroundTint="#FFC107" />
+            android:layout_margin="14dp"
+            android:src="@android:drawable/ic_media_pause"
+            android:background="@drawable/btn_pause_circle"
+            android:tint="#FFFFFF"
+            android:contentDescription="Pause Game" />
 
     </RelativeLayout>
 
